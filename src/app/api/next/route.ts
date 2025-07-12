@@ -35,27 +35,30 @@ Keep the story paragraph under 100 words. ${
         ? "Focus on a satisfying ending."
         : "Make choices compelling and diverse."
     }`;
-    // Using OpenAI API (replace with your preferred AI service)
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a creative storytelling AI that responds only in valid JSON format.",
-          },
-          { role: "user", content: prompt },
-        ],
-        max_tokens: 500,
-        temperature: 0.8,
-      }),
-    });
+    // Using Groq API \
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "llama3-8b-8192",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a creative storytelling AI that responds only in valid JSON format.",
+            },
+            { role: "user", content: prompt },
+          ],
+          max_tokens: 500,
+          temperature: 0.8,
+        }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("AI service error");

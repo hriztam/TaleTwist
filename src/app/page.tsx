@@ -1,103 +1,178 @@
-import Image from "next/image";
+// src/app/page.tsx
+"use client";
+
+import { useReducer } from "react";
+import PromptForm from "./components/PromptForm";
+import StoryDisplay from "./components/StoryDisplay";
+import ChoiceButtons from "./components/ChoiceButtons";
+import { StoryInput, Choice, GameState } from "@/types/story";
+
+type Action =
+  | { type: "START_STORY" }
+  | { type: "STORY_GENERATED"; payload: { text: string; choices: Choice[] } }
+  | { type: "CHOICE_SELECTED" }
+  | { type: "STORY_CONTINUED"; payload: { text: string; choices: Choice[] } }
+  | { type: "STORY_COMPLETED"; payload: { text: string } }
+  | { type: "ERROR" }
+  | { type: "RESET" };
+
+const initialState: GameState = {
+  isStarted: false,
+  currentTurn: 0,
+  maxTurns: 3,
+  storySegments: [],
+  isLoading: false,
+  isComplete: false,
+};
+
+function gameReducer(state: GameState, action: Action): GameState {
+  switch (action.type) {
+    case "START_STORY":
+      return { ...state, isLoading: true };
+
+    case "STORY_GENERATED":
+      return {
+        ...state,
+        isStarted: true,
+        isLoading: false,
+        storySegments: [action.payload],
+      };
+
+    case "CHOICE_SELECTED":
+      return { ...state, isLoading: true };
+
+    case "STORY_CONTINUED":
+      return {
+        ...state,
+        isLoading: false,
+        currentTurn: state.currentTurn + 1,
+        storySegments: [...state.storySegments, action.payload],
+      };
+
+    case "STORY_COMPLETED":
+      return {
+        ...state,
+        isLoading: false,
+        currentTurn: state.currentTurn + 1,
+        isComplete: true,
+        storySegments: [
+          ...state.storySegments,
+          { text: action.payload.text, choices: [] },
+        ],
+      };
+
+    case "ERROR":
+      return { ...state, isLoading: false };
+
+    case "RESET":
+      return initialState;
+
+    default:
+      return state;
+  }
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [state, dispatch] = useReducer(gameReducer, initialState);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleStartStory = async (input: StoryInput) => {
+    dispatch({ type: "START_STORY" });
+
+    try {
+      const response = await fetch("/api/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
+
+      if (!response.ok) throw new Error("Failed to start story");
+
+      const data = await response.json();
+      dispatch({
+        type: "STORY_GENERATED",
+        payload: { text: data.story, choices: data.choices },
+      });
+    } catch (error) {
+      console.error("Error starting story:", error);
+      dispatch({ type: "ERROR" });
+    }
+  };
+
+  const handleChoiceSelect = async (choice: Choice) => {
+    dispatch({ type: "CHOICE_SELECTED" });
+
+    try {
+      const previousStory = state.storySegments.map((s) => s.text).join("\n\n");
+      const response = await fetch("/api/next", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          previousStory,
+          selectedChoice: choice.text,
+          turnNumber: state.currentTurn,
+          maxTurns: state.maxTurns,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to continue story");
+
+      const data = await response.json();
+
+      if (state.currentTurn >= state.maxTurns - 1) {
+        dispatch({ type: "STORY_COMPLETED", payload: { text: data.story } });
+      } else {
+        dispatch({
+          type: "STORY_CONTINUED",
+          payload: { text: data.story, choices: data.choices },
+        });
+      }
+    } catch (error) {
+      console.error("Error continuing story:", error);
+      dispatch({ type: "ERROR" });
+    }
+  };
+
+  const handleReset = () => {
+    dispatch({ type: "RESET" });
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+      {!state.isStarted ? (
+        <PromptForm onSubmit={handleStartStory} isLoading={state.isLoading} />
+      ) : (
+        <div className="space-y-8">
+          <StoryDisplay
+            segments={state.storySegments}
+            currentTurn={state.currentTurn}
+            maxTurns={state.maxTurns}
+          />
+
+          {!state.isComplete && state.storySegments.length > 0 && (
+            <ChoiceButtons
+              choices={
+                state.storySegments[state.storySegments.length - 1].choices
+              }
+              onChoiceSelect={handleChoiceSelect}
+              isLoading={state.isLoading}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          )}
+
+          {state.isComplete && (
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                The End!
+              </h3>
+              <button
+                onClick={handleReset}
+                className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
+              >
+                Start New Adventure
+              </button>
+            </div>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
     </div>
   );
 }

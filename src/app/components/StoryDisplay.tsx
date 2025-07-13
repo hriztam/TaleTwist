@@ -68,6 +68,9 @@ export default function StoryDisplay({
                   No story yet. Start writing!
                 </p>
               </div>
+              <div className="absolute -bottom-4 -right-4 text-6xl text-amber-400 opacity-50">
+                "
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -84,7 +87,7 @@ export default function StoryDisplay({
                 </div>
                 <div className="absolute -bottom-4 -right-4 text-6xl text-amber-400 opacity-50"></div>
                 <div>
-                  <p className="text-lg md:text-xl leading-relaxed font-serif text-slate-700 relative z-10">
+                  <p className="text-lg md:text-xl leading-relaxed font-serif text-slate-700 relative z-10 pl-4">
                     {index === segments.length - 1 && animatingIndex === index
                       ? displayedText
                       : segment.text}
@@ -104,6 +107,9 @@ export default function StoryDisplay({
                       Start Over
                     </button>
                   )}
+                </div>
+                <div className="absolute -bottom-4 -right-4 text-6xl text-amber-400 opacity-50">
+                  "
                 </div>
               </div>
             </CardContent>

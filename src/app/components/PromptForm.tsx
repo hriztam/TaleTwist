@@ -84,7 +84,7 @@ export default function PromptForm({ onSubmit, isLoading }: PromptFormProps) {
                 htmlFor="characters"
                 className="text-purple-200 font-medium mb-2 block"
               >
-                Main Characters
+                Characters
               </Label>
               <Input
                 id="prompt-input"
@@ -102,7 +102,7 @@ export default function PromptForm({ onSubmit, isLoading }: PromptFormProps) {
                 htmlFor="setting"
                 className="text-purple-200 font-medium mb-2 block"
               >
-                Setting
+                Environment
               </Label>
               <Input
                 id="setting"

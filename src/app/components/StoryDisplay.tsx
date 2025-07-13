@@ -26,13 +26,20 @@ export default function StoryDisplay({
               "
             </div>
             <div>
-              {segments.map((segment, index) => (
-                <div key={index}>
-                  <p className="text-lg md:text-xl leading-relaxed font-serif text-slate-700 relative z-10">
-                    {segment.text}
-                  </p>
-                </div>
-              ))}
+              {segments.length === 0 ? (
+                <p className="text-lg md:text-xl leading-relaxed font-serif text-slate-500 italic text-center relative z-10">
+                  Your story will appear here as you create it. Start by giving
+                  a prompt!
+                </p>
+              ) : (
+                segments.map((segment, index) => (
+                  <div key={index}>
+                    <p className="text-lg md:text-xl leading-relaxed font-serif text-slate-700 relative z-10">
+                      {segment.text}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </CardContent>

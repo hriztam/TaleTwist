@@ -87,7 +87,7 @@ export default function PromptForm({ onSubmit, isLoading }: PromptFormProps) {
                 Main Characters
               </Label>
               <Input
-                id="characters"
+                id="prompt-input"
                 value={input.characters}
                 onChange={(e) =>
                   setInput({ ...input, characters: e.target.value })

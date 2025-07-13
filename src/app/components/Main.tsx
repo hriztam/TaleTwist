@@ -64,7 +64,7 @@ function gameReducer(state: GameState, action: Action): GameState {
       return { ...state, isLoading: false };
 
     case "RESET":
-      return initialState;
+      return state;
 
     default:
       return state;
@@ -83,8 +83,6 @@ export function Main() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       });
-
-      console.log("Response:", response);
 
       if (!response.ok) throw new Error("Failed to start story");
 
@@ -155,13 +153,32 @@ export function Main() {
             Craft your own adventure using AI. Just give a prompt, and watch
             your story unfold.
           </p>
-          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
+          <Button
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
+            onClick={() => {
+              const input =
+                document.querySelector<HTMLInputElement>("#prompt-input");
+              if (input) {
+                input.scrollIntoView({ behavior: "smooth", block: "center" });
+                setTimeout(() => input.focus(), 500);
+              }
+            }}
+          >
             Start Your Story
           </Button>
         </div>
       </div>
 
       <PromptForm onSubmit={handleStartStory} isLoading={state.isLoading} />
+
+      {state.isStarted && (
+        <div className="text-center mb-8">
+          <p className="text-purple-300">
+            Turn {state.currentTurn + 1} of {state.maxTurns}
+          </p>
+        </div>
+      )}
+
       <StoryDisplay
         segments={state.storySegments}
         currentTurn={state.currentTurn}

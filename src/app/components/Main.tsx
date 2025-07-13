@@ -147,7 +147,7 @@ export function Main() {
       <div className="relative z-10 pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="font-heading text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-            TaleTwist
+            TalesTwist
           </h1>
           <p className="text-xl md:text-2xl text-purple-200 mb-8 max-w-2xl mx-auto leading-relaxed">
             Craft your own adventure using AI. Just give a prompt, and watch

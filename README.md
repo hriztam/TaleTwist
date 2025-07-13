@@ -33,29 +33,22 @@ GroqCloud API token (free tier, sign up at [qropAPI.co](https://console.groq.com
 Clone the Repository:
 
 ```
-git clone https://github.com/your-repo/storyweaver-ai.git
-cd storyweaver-ai
-```
-
-Frontend Setup (Next.js):
-
-```
-cd frontend
+git clone https://github.com/hriztam/TaleTwist
+cd TaleTwist
 npm install
 ```
 
-Create a .env.local file:NEXT_PUBLIC_API_URL=http://localhost:5000
-
-Run the development server:npm run dev
-
-Backend Setup (Node.js/Express):
+Create a .env file:
 
 ```
-cd backend
-npm install
+GROQ_API_KEY=your_groqapi_key
 ```
 
-Create a .env file:GROQ_API_KEY=your_groqapi_key
+Run the development server:
+
+```
+npm run dev
+```
 
 ## Usage
 

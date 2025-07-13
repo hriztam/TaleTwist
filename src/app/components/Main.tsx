@@ -64,7 +64,7 @@ function gameReducer(state: GameState, action: Action): GameState {
       return { ...state, isLoading: false };
 
     case "RESET":
-      return state;
+      return initialState;
 
     default:
       return state;
@@ -174,7 +174,7 @@ export function Main() {
       {state.isStarted && (
         <div className="text-center mb-8">
           <p className="text-purple-300">
-            Turn {state.currentTurn + 1} of {state.maxTurns}
+            Turn {state.currentTurn} of {state.maxTurns}
           </p>
         </div>
       )}
@@ -183,7 +183,10 @@ export function Main() {
         segments={state.storySegments}
         currentTurn={state.currentTurn}
         maxTurns={state.maxTurns}
+        isStarted={state.isStarted}
+        onReset={handleReset}
       />
+      {/* Choices below the card */}
       {!state.isComplete && state.storySegments.length > 0 && (
         <ChoiceButtons
           choices={state.storySegments[state.storySegments.length - 1].choices}

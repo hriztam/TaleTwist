@@ -14,11 +14,11 @@ Planned Enhancement: Integration of AI-generated images (e.g., via Craiyon API) 
 
 ## Tech Stack
 
-Frontend: Next.js with Tailwind CSS for a responsive, user-friendly interface.
-Backend: Node.js with Express for API handling and AI integration.
-AI: llama-8b (Groqcloud) for story and choice generation.
-Deployment: Planning on deploying it to Vercel
-Planned: Craiyon API for optional image generation to enhance story immersion and add a database to save the user progress.
+- Frontend: Next.js with Tailwind CSS for a responsive, user-friendly interface.
+- Backend: Node.js with Express for API handling and AI integration.
+- AI: llama-8b (Groqcloud) for story and choice generation.
+- Deployment: Planning on deploying it to Vercel
+- Planned: Craiyon API for optional image generation to enhance story immersion and add a database to save the user progress.
 
 ## Installation and Setup
 
@@ -59,12 +59,12 @@ Create a .env file:GROQ_API_KEY=your_groqapi_key
 
 ## Usage
 
-Open the deployed app (e.g., Vercel URL) or http://localhost:3000 in development.
-Enter a story prompt (e.g., “A sci-fi adventure with a hacker and a rogue AI”).
-Click “Generate Story” to receive the first story segment with 2-3 choices.
-Select a choice to progress the story, repeating for 3-5 segments.
-After the final choice, view a conclusive story ending.
-Click “Start New Story” to create a new narrative.
+1. Open the deployed app (e.g., Vercel URL) or http://localhost:3000 in development.
+2. Enter a story prompt (e.g., “A sci-fi adventure with a hacker and a rogue AI”).
+3. Click “Generate Story” to receive the first story segment with 2-3 choices.
+4. Select a choice to progress the story, repeating for 3-5 segments.
+5. After the final choice, view a conclusive story ending.
+6. Click “Start New Story” to create a new narrative.
 
 ## Example Story Flow
 

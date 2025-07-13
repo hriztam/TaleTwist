@@ -1,7 +1,7 @@
-// src/app/components/StoryDisplay.tsx
 "use client";
 
 import { StorySegment } from "@/types/story";
+import { Card, CardContent } from "./ui/card";
 
 interface StoryDisplayProps {
   segments: StorySegment[];
@@ -15,38 +15,28 @@ export default function StoryDisplay({
   maxTurns,
 }: StoryDisplayProps) {
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8">
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">Your Story</h2>
-          <span className="text-sm text-gray-500">
-            Turn {currentTurn + 1} of {maxTurns}
-          </span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((currentTurn + 1) / maxTurns) * 100}%` }}
-          />
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        {segments.map((segment, index) => (
-          <div
-            key={index}
-            className={`p-4 rounded-lg border-l-4 ${
-              index === segments.length - 1
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-300 bg-gray-50"
-            }`}
-          >
-            <p className="text-gray-800 leading-relaxed text-lg">
-              {segment.text}
-            </p>
+    <div className="relative z-10 px-4 mb-12">
+      <Card className="max-w-4xl mx-auto bg-gradient-to-br from-amber-100 to-orange-100 text-slate-800 border-amber-300 shadow-2xl">
+        <CardContent className="px-8 py-12">
+          <div className="relative">
+            <div className="absolute -top-4 -left-4 text-6xl text-amber-400 opacity-50">
+              "
+            </div>
+            <div className="absolute -bottom-4 -right-4 text-6xl text-amber-400 opacity-50">
+              "
+            </div>
+            <div>
+              {segments.map((segment, index) => (
+                <div key={index}>
+                  <p className="text-lg md:text-xl leading-relaxed font-serif text-slate-700 relative z-10">
+                    {segment.text}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

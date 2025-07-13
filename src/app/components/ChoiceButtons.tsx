@@ -1,13 +1,32 @@
-// src/app/components/ChoiceButtons.tsx
 "use client";
 
 import { Choice } from "@/types/story";
+import { Card, CardContent } from "./ui/card";
+import { Icon } from "@iconify/react";
+import { cn } from "@/lib/utils";
+import { console } from "inspector";
 
 interface ChoiceButtonsProps {
   choices: Choice[];
   onChoiceSelect: (choice: Choice) => void;
   isLoading: boolean;
 }
+
+const className = [
+  "from-orange-800 to-red-800 border-orange-400/30",
+  "from-purple-800 to-indigo-800 border-purple-400/30",
+  "from-emerald-800 to-teal-800 border-emerald-400/30",
+];
+
+const choiceIcons = ["mdi:sword", "mdi:crystal-ball", "mdi:leaf"];
+
+const choiceIconsColor = ["orange", "purple", "emerald"];
+
+const choiceTexts = [
+  "The Warrior's Way",
+  "The Mystic Portal",
+  "The Forest Path",
+];
 
 export default function ChoiceButtons({
   choices,
@@ -17,31 +36,45 @@ export default function ChoiceButtons({
   if (choices.length === 0) return null;
 
   return (
-    <div className="max-w-4xl mx-auto mt-8">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-        What happens next?
-      </h3>
-      <div className="space-y-4">
-        {choices.map((choice) => (
-          <button
-            key={choice.id}
-            onClick={() => onChoiceSelect(choice)}
-            disabled={isLoading}
-            className="w-full p-4 text-left bg-white border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            <span className="text-gray-800 font-medium">{choice.text}</span>
-          </button>
-        ))}
-      </div>
-
-      {isLoading && (
-        <div className="text-center mt-6">
-          <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-            <span className="text-blue-800">Generating next part...</span>
-          </div>
+    <div className="relative z-10 px-4 pb-20">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="font-heading text-2xl text-center text-purple-200 mb-8">
+          What do you choose?
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {choices.map((choice, idx) => (
+            <Card
+              key={choice.id}
+              onClick={() => onChoiceSelect(choice)}
+              className={cn(
+                "bg-gradient-to-br hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105 cursor-pointer",
+                className[idx]
+              )}
+            >
+              <CardContent className="px-6 py-8 text-center">
+                <div className="mb-4">
+                  <div
+                    className={`w-16 h-16 bg-${choiceIconsColor[idx]}-400 rounded-full mx-auto flex items-center justify-center mb-4`}
+                  >
+                    <Icon
+                      icon={choiceIcons[idx]}
+                      className={`w-8 h-8 text-${choiceIconsColor[idx]}-800`}
+                    />
+                  </div>
+                  <h3
+                    className={`font-heading text-xl text-${choiceIconsColor[idx]}-200 mb-3`}
+                  >
+                    {choiceTexts[idx]}
+                  </h3>
+                  <p className={`text-${choiceIconsColor[idx]}-100 text-sm`}>
+                    {choice.text}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

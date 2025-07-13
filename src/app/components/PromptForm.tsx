@@ -3,6 +3,17 @@
 
 import { useState } from "react";
 import { StoryInput } from "@/types/story";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 interface PromptFormProps {
   onSubmit: (input: StoryInput) => void;
@@ -35,70 +46,85 @@ export default function PromptForm({ onSubmit, isLoading }: PromptFormProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8">
-      <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">
-        AI Story Generator
-      </h1>
-      <p className="text-center text-gray-600 mb-8">
-        Create your own interactive adventure story
-      </p>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Genre
-          </label>
-          <select
-            value={input.genre}
-            onChange={(e) => setInput({ ...input, genre: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          >
-            <option value="">Select a genre...</option>
-            {GENRE_OPTIONS.map((genre) => (
-              <option key={genre} value={genre}>
-                {genre}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Main Characters
-          </label>
-          <input
-            type="text"
-            value={input.characters}
-            onChange={(e) => setInput({ ...input, characters: e.target.value })}
-            placeholder="e.g., A brave knight and a wise wizard"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Setting
-          </label>
-          <input
-            type="text"
-            value={input.setting}
-            onChange={(e) => setInput({ ...input, setting: e.target.value })}
-            placeholder="e.g., A mysterious ancient castle"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
-        >
-          {isLoading ? "Generating Story..." : "Start My Adventure!"}
-        </button>
-      </form>
+    <div className="relative z-10 px-4 mb-16">
+      <Card className="max-w-2xl mx-auto bg-slate-800/50 backdrop-blur-sm border-purple-500/20 shadow-2xl">
+        <CardHeader>
+          <CardTitle className="font-heading text-2xl text-center text-purple-200">
+            Create Your Adventure
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-6 space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <Label
+                htmlFor="genre"
+                className="text-purple-200 font-medium mb-2 block"
+              >
+                Genre
+              </Label>
+              <Select
+                value={input.genre}
+                onValueChange={(value) => setInput({ ...input, genre: value })}
+                required
+              >
+                <SelectTrigger className="bg-slate-700/50 border-purple-500/30 text-white">
+                  <SelectValue placeholder="Choose your genre..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {GENRE_OPTIONS.map((genre) => (
+                    <SelectItem key={genre} value={genre}>
+                      {genre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label
+                htmlFor="characters"
+                className="text-purple-200 font-medium mb-2 block"
+              >
+                Main Characters
+              </Label>
+              <Input
+                id="characters"
+                value={input.characters}
+                onChange={(e) =>
+                  setInput({ ...input, characters: e.target.value })
+                }
+                placeholder="A brave knight, a wise wizard, a mysterious stranger..."
+                className="bg-slate-700/50 border-purple-500/30 text-white placeholder-purple-300"
+                required
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor="setting"
+                className="text-purple-200 font-medium mb-2 block"
+              >
+                Setting
+              </Label>
+              <Input
+                id="setting"
+                value={input.setting}
+                onChange={(e) =>
+                  setInput({ ...input, setting: e.target.value })
+                }
+                placeholder="An enchanted forest, a space station, a haunted mansion..."
+                className="bg-slate-700/50 border-purple-500/30 text-white placeholder-purple-300"
+                required
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 text-lg font-semibold rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105"
+            >
+              {isLoading ? "Generating Story..." : "Begin Adventure"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

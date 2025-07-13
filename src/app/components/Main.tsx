@@ -18,7 +18,7 @@ type Action =
 const initialState: GameState = {
   isStarted: false,
   currentTurn: 0,
-  maxTurns: 3,
+  maxTurns: 5,
   storySegments: [],
   isLoading: false,
   isComplete: false,
